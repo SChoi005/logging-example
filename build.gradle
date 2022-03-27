@@ -22,6 +22,17 @@ repositories {
     mavenCentral()
 }
 
+test {
+    testLogging {
+        // test jvm의 standard out and standard error을 console에 출력한다.
+        showStandardStreams = true
+        showCauses = true
+        showExceptions = true
+        showStackTraces = true
+        exceptionFormat = 'full'
+    }
+}
+
 dependencies {
 	/*
 	spring-boot-starter 관련 라이브러리에 대한 설명은 아래의 URL를 참고해주세요.
@@ -33,7 +44,8 @@ dependencies {
 	
 	compile('org.springframework.boot:spring-boot-starter-web')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
-	
+	compile('org.projectlombok:lombok:1.18.18')
+    annotationProcessor('org.projectlombok:lombok:1.18.18')
 	/* Web 
 	compile('org.springframework.boot:spring-boot-starter-data-rest')
 	compile('org.springframework.boot:spring-boot-starter-hateoas')
