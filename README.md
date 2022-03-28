@@ -32,5 +32,3 @@ In cases of user's log, those can be used as analyzed data.
 ## caution
 > Because debug and trace levels stack lots of logs, we cannot to handle volume of them. so it is better that unimportant information is set under debug level and not to do logging.
 Use debug and trace levels only at developing stage and do not use at deployment stage.
-
-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
