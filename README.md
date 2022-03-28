@@ -23,11 +23,14 @@ In cases of user's log, those can be used as analyzed data.
 ## Log rotation
 > If the size of log file is over upper limit, rotation would happen. we can divide log file through changing setting by date.
 
+## Interceptor methods
+> If each method's return value is true, next chain will excute, but if doing not, next interceptor and controller won't execute.  
+1. preHandle() => this method execute before calling controller.
+2. postHandle() => this method execute after calling controller.
+3. afterComplete() => this method execute when all tasks including the lastest result complete. 
+
 ## caution
 > Because debug and trace levels stack lots of logs, we cannot to handle volume of them. so it is better that unimportant information is set under debug level and not to do logging.
 Use debug and trace levels only at developing stage and do not use at deployment stage.
-
-interceptor 이해 
-
 
 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

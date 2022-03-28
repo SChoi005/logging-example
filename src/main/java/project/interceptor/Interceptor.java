@@ -8,28 +8,49 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.catalina.core.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 import org.springframework.web.util.WebUtils;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
-import project.inter.FuctionNameAware;
 
 @Slf4j
 @Configuration
+@AllArgsConstructor
 public class Interceptor extends HandlerInterceptorAdapter{
     
-    // Before operation
+    private final ObjectMapper objectMapper;
+    
+    // Request Body is null because controller doesn't execute yet
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("\n"+
-                 "\tMethod:{}",
-                 request.getMethod() 
-                );
+        
+        final ContentCachingRequestWrapper cachingRequest = (ContentCachingRequestWrapper)request;
+        final ContentCachingResponseWrapper cachingResponse = (ContentCachingResponseWrapper)response;
+        
+        log.info("====prehandle====");
+        
+        if(cachingRequest.getContentType()!=null && cachingRequest.getContentType().contains("application/json")){
+            if(cachingRequest.getContentAsByteArray()!=null && cachingRequest.getContentAsByteArray().length!=0){
+                log.info("Request Body : {}", objectMapper.readTree(cachingRequest.getContentAsByteArray()));
+            }
+        }
+
+        if (cachingResponse.getContentType() != null && cachingResponse.getContentType().contains("application/json")) {
+            if (cachingResponse.getContentAsByteArray() != null && cachingResponse.getContentAsByteArray().length != 0) {
+                log.info("Response Body : {}", objectMapper.readTree(cachingResponse.getContentAsByteArray()));
+            }
+        }
+
+        log.info("===================");
         
         return true;
     }
@@ -37,43 +58,50 @@ public class Interceptor extends HandlerInterceptorAdapter{
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 		ModelAndView modelAndView) throws Exception {
-        log.info("종료종료");
-    
-    }
-    
-    private Map getHeaders(HttpServletRequest request){
-        Map headerMap = new HashMap<>();
         
-        Enumeration headerArray = request.getHeaderNames();
-        while(headerArray.hasMoreElements()){
-            String headerName = headerArray.nextElement().toString();
-            headerMap.put(headerMap, request.getHeader(headerName));
+        final ContentCachingRequestWrapper cachingRequest = (ContentCachingRequestWrapper)request;
+        final ContentCachingResponseWrapper cachingResponse = (ContentCachingResponseWrapper)response;
+        
+        log.info("====posthandle====");
+        
+        if(cachingRequest.getContentType()!=null && cachingRequest.getContentType().contains("application/json")){
+            if(cachingRequest.getContentAsByteArray()!=null && cachingRequest.getContentAsByteArray().length!=0){
+                log.info("Request Body : {}", objectMapper.readTree(cachingRequest.getContentAsByteArray()));
+            }
         }
-        
-        if(headerMap == null)
-            return null;
-        
-        return headerMap;
-    }
-    
-    private String getRequestBody(ContentCachingRequestWrapper request){
-        
-        ContentCachingRequestWrapper wrapper = WebUtils.getNativeRequest(request, ContentCachingRequestWrapper.class);
-        
-        if(wrapper != null){
-            byte[] buf = wrapper.getContentAsByteArray();
-            if(buf.length>0){
-               try{
-                   return new String(buf,0,buf.length,wrapper.getCharacterEncoding());
-               }catch(UnsupportedEncodingException e){
-                   return "-";
-               }
+
+        if (cachingResponse.getContentType() != null && cachingResponse.getContentType().contains("application/json")) {
+            if (cachingResponse.getContentAsByteArray() != null && cachingResponse.getContentAsByteArray().length != 0) {
+                log.info("Response Body : {}", objectMapper.readTree(cachingResponse.getContentAsByteArray()));
             }
         }
         
-        return "-";
+        log.info("===================");
+    
     }
     
-    
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+            throws Exception {
+
+        final ContentCachingRequestWrapper cachingRequest = (ContentCachingRequestWrapper)request;
+        final ContentCachingResponseWrapper cachingResponse = (ContentCachingResponseWrapper)response;
+        
+        log.info("====afterCompletion====");
+        
+        if(cachingRequest.getContentType()!=null && cachingRequest.getContentType().contains("application/json")){
+            if(cachingRequest.getContentAsByteArray()!=null && cachingRequest.getContentAsByteArray().length!=0){
+                log.info("Request Body : {}", objectMapper.readTree(cachingRequest.getContentAsByteArray()));
+            }
+        }
+
+        if (cachingResponse.getContentType() != null && cachingResponse.getContentType().contains("application/json")) {
+            if (cachingResponse.getContentAsByteArray() != null && cachingResponse.getContentAsByteArray().length != 0) {
+                log.info("Response Body : {}", objectMapper.readTree(cachingResponse.getContentAsByteArray()));
+            }
+        }
+        
+        log.info("===================");
+    }
     
 }
