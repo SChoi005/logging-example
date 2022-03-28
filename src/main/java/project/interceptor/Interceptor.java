@@ -26,12 +26,9 @@ public class Interceptor extends HandlerInterceptorAdapter{
     // Before operation
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        
         log.info("\n"+
-                 "\tMethod:{}"+
-                 "\n\tBody:{}", 
-                 request.getMethod(), 
-                 getRequestBody((ContentCachingRequestWrapper)request)
+                 "\tMethod:{}",
+                 request.getMethod() 
                 );
         
         return true;
